@@ -1,28 +1,30 @@
 # CAMPUS IQ
 ### Smart Campus Operations & Resource Intelligence System
 
-CAMPUS IQ is a Windows desktop application built with Python, CustomTkinter and SQLite. It brings campus facilities, bookings, assets, maintenance and energy records into one interface.
+CAMPUS IQ is a Windows desktop application built with Python, CustomTkinter and SQLite. It centralizes campus facilities, bookings, equipment, maintenance tickets, energy records, notifications and reports.
 
 ## Features
-- Role-based sign-in for administrators, faculty, students, lab assistants and maintenance staff.
-- Database-backed dashboard with campus metrics and maintenance activity.
-- Facility directory and reservation requests with overlap and capacity validation.
-- Equipment asset register and repair-condition tracking.
-- Maintenance ticket workflow with rule-based priority suggestions.
-- Building-level energy records and consumption summaries.
-- CSV, Excel and PDF report exports.
-- Automatic SQLite database creation with sample data.
+- Role-aware sign-in for administrators, faculty, students, lab assistants and maintenance staff.
+- Dashboard with live database counts and recent maintenance activity.
+- Facility directory; administrators can register facilities.
+- Booking requests with date/time validation, capacity checks, overlap prevention, administrator approval/rejection and requester notifications.
+- Asset register with condition tracking.
+- Maintenance reporting for students and staff, role-limited ticket visibility, assignment/status workflow and requester notifications.
+- Energy summaries and monthly chart from stored meter records. Demo readings are labelled; no live IoT integration is claimed.
+- In-app notification centre.
+- CSV, Excel and PDF exports saved to the exact path selected in the save dialog.
+- SQLite database creation and legacy demo-data migration.
 
-## Quick start (Windows)
-1. Install Python 3.10 or newer.
-2. Open a terminal in this folder.
-3. Create and activate a virtual environment:
-   `py -m venv .venv`
-   `.venv\\Scripts\\activate`
-4. Install packages:
-   `python -m pip install -r requirements.txt`
-5. Run:
-   `python main.py`
+## Windows setup
+Use Python 3.10 or newer (Python 3.13 is supported by the dependency set).
+```powershell
+py -3.13 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python main.py
+```
+Do not run `pip install tkinter`: Tkinter is part of the standard Windows Python installation. CustomTkinter is installed through requirements.txt.
 
 ## Demo accounts
 | Role | Username | Password |
@@ -33,28 +35,32 @@ CAMPUS IQ is a Windows desktop application built with Python, CustomTkinter and 
 | Lab Assistant | labassistant | Lab@123 |
 | Maintenance Staff | maintenance | Fix@123 |
 
-These credentials are for local demonstration only. Change them before using real institutional data. Production deployment should use per-user random salts, a password-reset flow, and database access controls.
+Demo passwords are for evaluation only. Change them before any real deployment. Password hashes use PBKDF2-HMAC-SHA256 with per-user random salts; legacy demo hashes are upgraded on successful sign-in.
+
+## Role access
+- Administrator: all modules, facility registration, booking approvals, maintenance workflow and reports.
+- Faculty: dashboard, facilities, own booking requests, energy view and reports.
+- Student: dashboard, facilities, own bookings, own maintenance reports and notifications.
+- Lab Assistant: dashboard, facilities, asset register, maintenance reporting and notifications.
+- Maintenance Staff: dashboard, facilities, maintenance queue, reports and notifications.
 
 ## Architecture
-- `database/`: SQLite schema, connection handling and demonstration seed data.
-- `services/`: authentication, bookings, assets, maintenance and analytics.
-- `ui/`: CustomTkinter login, navigation, reusable cards and application pages.
-- `utils/`: report export utilities.
-- `data/`: created automatically for the SQLite database.
-- `exports/`: generated reports.
+- `database/`: SQLite schema, connection handling, seed data and migrations.
+- `services/`: authentication, bookings, assets, maintenance, notifications and analytics.
+- `ui/`: CustomTkinter login, navigation, tables, forms and pages.
+- `utils/`: report exporters.
+- `data/`: automatically created SQLite database.
+- `exports/`: available for generated project exports.
 
-## Data integrity
-- Booking requests reject past dates, invalid time ranges, capacity overflows and overlapping requests.
-- Energy records preserve a source label (Manual, Demo, etc.).
-- Maintenance priority is a transparent rule-based suggestion; an authorized administrator remains responsible for final decisions.
-- Sample/demo data is clearly identified.
+## Tests
+```powershell
+python -m compileall -q .
+python -m unittest discover -s tests -v
+```
+Tests cover demo authentication, per-user password salts, booking conflict/approval, maintenance status and notifications, and CSV export destination.
 
-## Testing and syntax checks
-From this folder:
-`python -m unittest discover -s tests -v`
-`python -m compileall -q .`
-
-## Current MVP scope
-Implemented: login, dashboard, facility directory, booking request, asset registry, maintenance workflow, energy records and PDF/Excel/CSV report export.
-
-Planned extensions: QR code workflows, full administration CRUD, richer chart visualizations, notification delivery, department-specific permissions and connected IoT energy meters. The current energy screen uses stored manual/demo readings and does not claim live IoT integration.
+## Data and limitations
+- Energy readings are manually stored demonstration records, not live smart-meter data.
+- Priority is a transparent keyword-based suggestion, not an AI diagnosis.
+- In-app notifications appear in the application; no email/SMS delivery is configured.
+- This is an academic MVP, not a hardened production campus platform.

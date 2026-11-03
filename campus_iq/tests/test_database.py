@@ -1,5 +1,5 @@
 """Regression tests for authentication, booking, maintenance and report exports."""
-import sys, unittest, tempfile
+import sys, unittest, tempfile, random
 from pathlib import Path\nfrom uuid import uuid4
 from datetime import date,timedelta
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))

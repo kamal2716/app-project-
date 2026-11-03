@@ -1,6 +1,6 @@
 """Regression tests for authentication, booking, maintenance and report exports."""
 import sys, unittest, tempfile
-from pathlib import Path
+from pathlib import Path\nfrom uuid import uuid4
 from datetime import date,timedelta
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from database.db import initialize_database, connection
@@ -27,7 +27,7 @@ class CampusIQTests(unittest.TestCase):
         self.assertEqual(suggested_priority("Electrical","Sparking from exposed wire"),"Critical")
         self.assertEqual(suggested_priority("Furniture","Loose chair"),"Medium")
     def test_booking_conflict_and_review(self):
-        future=(date.today()+timedelta(days=30)).isoformat()
+        future=(date.today()+timedelta(days=30 + uuid4().int % 300)).isoformat()
         with connection() as conn:
             facility=conn.execute("SELECT id FROM facilities LIMIT 1").fetchone()[0]
             user=conn.execute("SELECT id FROM users WHERE username='student'").fetchone()[0]

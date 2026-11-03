@@ -126,7 +126,7 @@ class CampusIQApp(ctk.CTk):
                     messagebox.showinfo("Booking","Request submitted and awaiting review."); self.show_bookings()
                 except Exception as exc: messagebox.showerror("Booking not created",str(exc))
             styled_button(form,"Submit request",submit).grid(row=1,column=2,padx=8)
-        rows=list_bookings(None if role in (ADMIN,"Faculty") else self.user["id"])
+        rows=list_bookings(None if role==ADMIN else self.user["id"])
         wrap,tree=self.table(body,("id","facility","building","requester","booking_date","start_time","end_time","purpose","attendees","status"),rows); wrap.pack(fill="x")
         if role==ADMIN:
             actions=ctk.CTkFrame(body,fg_color="transparent"); actions.pack(anchor="e",pady=10)
